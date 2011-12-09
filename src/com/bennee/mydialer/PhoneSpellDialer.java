@@ -1,27 +1,25 @@
 /*
- * Copyright (C) 2010 Wysie Soh
- * 
- * NubDial is free software. It is based upon Lawrence's Greenfield's SpellDial
- * and as such, is under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 2 of the License, or (at your option)
- * any later version.
- * 
- * Copyright (C) 2010 Lawrence Greenfield
- * 
- *  SpellDial is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  SpellDial is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with SpellDial.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+    This file is part of MyDialer.
+
+    MyDialer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MyDialer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MyDialer.  If not, see <http://www.gnu.org/licenses/>.
+
+    Copyright (C) 2011 Alex Bennée <alex@bennee.com>
+
+    This code is derived from:
+      - NubDial, Copyright (C) 2010 Wysie Soh
+      - SpellDial, Copyright (C) Lawrence Greenfield
+*/
 // Features:
 // - figure out when to clear the partially completed number
 // - audible touch tones
@@ -40,7 +38,7 @@
 // - suck the whole thing into memory? would suck for lots of contacts...
 // - do a join and have a non 1:1 mapping from results to rows?
 
-package com.wysie.wydialer;
+package com.bennee.mydialer;
 
 import java.text.Collator;
 import java.util.ArrayList;
