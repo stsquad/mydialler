@@ -1,4 +1,15 @@
-SpellDial, the source code.
+MyDialer, the source code.
+
+This is a fork of NubDial which in turn was forked from SpellDial by
+Larry Greenfield. I've just forked it because I wanted to replace the
+rather crap default dialler in Android and I needed something that
+already built to play with. Both the projects look like one-man
+efforts that have stalled so I just cloned the code so I can
+experiment with it
+
+Alex Bennée, 9/12/2011
+
+== Old README ==
 
 Build using Eclipse.
 
