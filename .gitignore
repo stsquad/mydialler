@@ -1,0 +1,9 @@
+# .gitignore for MyDialer
+
+# local stuff
+local.properties
+
+# ignore android build dir
+bin/
+gen/
+
