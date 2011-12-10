@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">MyDialer</string>
+  <string name="app_name">MyDialler</string>
   <string name="numbers"></string>
   
   
@@ -45,13 +45,13 @@
   <!-- Wysie: About strings -->    
   <string name="title_about">About</string>
   <string name="title_about_name">Application Name</string>
-  <string name="summary_about_name">MyDialer</string>
+  <string name="summary_about_name">MyDialler</string>
   <string name="title_about_author">Developed By</string>
   <string name="summary_about_author">Alex Bennée</string>
   <string name="title_about_credits">Based On</string>
   <string name="summary_about_credits">NubDial by Wyse (which was based on SpellDial by Lawrence Greenfield)</string>
   <string name="title_about_source">Source Code</string>
-  <string name="summary_about_source">http://github.com/stsquad/mydialer</string>
+  <string name="summary_about_source">http://github.com/stsquad/mydialler</string>
   <string name="title_basic_usage">Basic Usage</string>
   <string name="summary_basic_usage">Fling down on the dialpad area to hide it, fling up to show it. Use # for spaces in name.</string>
 </resources>

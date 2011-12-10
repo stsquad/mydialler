@@ -21,7 +21,7 @@
       - SpellDial, Copyright (C) Lawrence Greenfield
 */
 
-package com.bennee.mydialer;
+package com.bennee.mydialler;
 
 import android.database.Cursor;
 import android.net.Uri;
