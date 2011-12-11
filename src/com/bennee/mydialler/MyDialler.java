@@ -378,8 +378,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 
 		digitsView.setOnClickListener(this);
 		digitsView.setKeyListener(DialerKeyListener.getInstance());
-		digitsView
-				.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+		digitsView.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 		digitsView.setInputType(android.text.InputType.TYPE_NULL);
 
 		ListView list = (ListView) findViewById(R.id.contactlist);
@@ -794,8 +793,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 		public void bindView(View view, Context context, Cursor cursor)
 		{
 
-			final ContactListItemCache cache = (ContactListItemCache) view
-					.getTag();
+			final ContactListItemCache cache = (ContactListItemCache) view.getTag();
 			final int DISPLAY_NAME_INDEX = 2;
 			final int PHONE_NUMBER_INDEX = 3;
 			final int PHONE_TYPE_INDEX = 4;
@@ -1010,7 +1008,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 	{
 		if (len == 0)
 			return;
-		Log.d("SPANNABLE NAME", "" + name);
+		Log.i("applyHighlight", name + " from "+ start + " for " +len);
 
 		if (matchedItalics)
 		{
@@ -1037,8 +1035,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 		}
 	}
 
-	private static void highlightName(Spannable name, String pattern,
-			boolean isNumber)
+	private static void highlightName(Spannable name, String pattern, boolean isNumber)
 	{
 		if (pattern.length() == 0)
 			return;
@@ -1206,9 +1203,8 @@ public class MyDialler extends Activity implements OnScrollListener,
 	private void updatecontactlist(Cursor cur)
 	{
 
-		Log.i("updatecontactlist", "cursor count:".concat(String.format("{0}",
-				cur.getCount())));
-
+	        Log.i("updatecontactlist", "cursor count:" + cur.getCount());
+	    
 		if (cur.getCount() == 0)
 		{
 			noMatches = true;
