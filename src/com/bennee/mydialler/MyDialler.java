@@ -144,7 +144,9 @@ public class MyDialler extends Activity implements OnScrollListener,
 	private ContactAccessor contactAccessor;
 	private MenuItem mAddToContacts;
 
-	private StringBuilder curFilter;
+	// The current filter string
+	private String currentFilter;
+	
 	private ContactListAdapter myAdapter;
 	private ListView myContactList;
 
@@ -175,11 +177,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 		contactAccessor = ContactAccessor.getInstance(getContentResolver());
 		// Cursor cur = contactAccessor.recalculate("", matchAnywhere);
 		// startManagingCursor(cur);
-		myAdapter = new ContactListAdapter(this, null, contactAccessor
-				.getContactSplit());
-		curFilter = new StringBuilder();
-
-		// scott
+		myAdapter = new ContactListAdapter(this, null, contactAccessor.getContactSplit());
 
 		new SearchContactsTask().execute("");
 
@@ -417,15 +415,26 @@ public class MyDialler extends Activity implements OnScrollListener,
 	 * return super.dispatchKeyEvent(event); } }
 	 */
 
-	private void createGlob()
+        /*
+	 * Create a filter string based on the number sequence.
+	 *
+	 * When searching contacts this gets morphed into SQL although we use it
+	 * as a plain regex when trying to work out what matched in the contact.
+	 *
+	 * @param number_sequence  the keypad number sequence as text
+	 * @return a string containing a regex for searching
+	 */
+	private static String createFilter(String number_sequence)
 	{
-		char[] currInput = digitsView.getText().toString().toCharArray();
-		curFilter.setLength(0);
+		StringBuilder result = new StringBuilder();
+		char[] currInput = number_sequence.toCharArray();
 
 		for (char c : currInput)
 		{
-			curFilter.append(buttonToGlobPiece(c));
+			result.append(buttonToGlobPiece(c));
 		}
+
+		return result.toString();
 	}
 
 	private void updateFilter(boolean add)
@@ -435,8 +444,10 @@ public class MyDialler extends Activity implements OnScrollListener,
 			noMatches = false;
 		}
 
-		createGlob();
+		currentFilter = createFilter(digitsView.getText().toString());
 
+		// If we have no current matches or have just deleted a character
+		// from our filter string.
 		if (noMatches)
 		{
 			return;
@@ -448,7 +459,7 @@ public class MyDialler extends Activity implements OnScrollListener,
 
 	private void removeAll()
 	{
-		curFilter.setLength(0);
+		currentFilter = null;
 		digitsView.getText().clear();
 		noMatches = false;
 		recalculate();
@@ -960,119 +971,35 @@ public class MyDialler extends Activity implements OnScrollListener,
 
 	/**
 	 * Return the next match of pattern starting at 'offset', or -1 if there's
-	 * no next match.
+	 * no next match. As far as I can tell this isn't involved in the search, just in
+	 * highlighting the matched text.
 	 */
 
-	private static int[] nextMatch(Spannable name, String pattern,
-			boolean isNumber)
+	private static int[] nextMatch(Spannable name, String pattern, boolean isNumber)
 	{
-		ArrayList<Integer> offsets = new ArrayList<Integer>();
 		String n = name.toString();
-		int k = 0;
-		boolean match = true;
-
-		if (isNumber)
-		{
-			pattern = pattern.replaceAll("-", "");
-		}
-
+		
 		int[] result = new int[2];
 		result[0] = -1; // start index of pattern matching
 		result[1] = pattern.length(); // end index of pattern matching
 
-		offsets.add(k);
-		while (true)
-		{
-			k = n.indexOf(" ", k + 1);
-			if (k != -1)
-				offsets.add(k + 1);
-			else
-				break;
-		}
+		Log.i("nextMatch", n + " with pattern " + pattern + " isNumber:" + isNumber);
 
-		for (int j = 0; j < offsets.size(); j++)
-		{
+		// The spannable we are searching is a phone number, so we can search directly
+		if (isNumber) {
+			pattern = pattern.replaceAll("-", "");
+			result[0] = n.indexOf(pattern);
+		} else {
+			String filter = createFilter(pattern);
+			String filterAsRegex = filter.replaceAll("\\[", "[\\\\Q").replaceAll("\\]", "\\\\E]{1}");
+			Log.i("nextMatch", "using filter: "+filter+" to a regex: " + filterAsRegex);
 
-			if (mapToPhone(name.charAt(offsets.get(j))) == pattern.charAt(0))
-			{
-				match = true;
-				result[0] = offsets.get(j);
-			}
-
-			if (match)
-			{
-				int currPos = offsets.get(j);
-				for (int i = 0; i < pattern.length(); i++)
-				{
-					try
-					{
-						if (mapToPhone(name.charAt(currPos)) != pattern
-								.charAt(i))
-						{
-							if (name.charAt(currPos) == '-')
-							{
-								result[1]++;
-								i--;
-							} else
-							{
-								match = false;
-								result[0] = -1;
-								result[1] = pattern.length();
-								break;
-							}
-						}
-					} catch (StringIndexOutOfBoundsException e)
-					{
-						match = false;
-						result[0] = -1;
-						result[1] = pattern.length();
-					}
-					currPos++;
-				}
-			}
-
-			if (match)
-			{
-				break;
-			}
-		}
-
-		// Wysie: If all the above fail, check if it's matchAnywhere iff it's a
-		// number
-		if (!match && matchAnywhere && isNumber)
-		{
-			int length = name.length() - pattern.length() + 1;
-			for (int j = 0; j < length; j++)
-			{
-				if (name.charAt(j) == pattern.charAt(0))
-				{
-					match = true;
-					int currPos = j;
-					for (int i = 0; i < pattern.length(); i++)
-					{
-						if (name.charAt(currPos) != pattern.charAt(i))
-						{
-							if (name.charAt(currPos) == '-')
-							{
-								result[1]++;
-								i--;
-							} else
-							{
-								match = false;
-								result[0] = -1;
-								result[1] = pattern.length();
-								break;
-							}
-						}
-						currPos++;
-					}
-				}
-
-				if (match)
-				{
-					result[0] = j;
-					break;
-				}
+			Pattern p = Pattern.compile(filterAsRegex);
+			Matcher m = p.matcher(n);
+			if (m.find()) {
+				result[0] = n.indexOf(m.group());
+			} else {
+				Log.i("nextMatch", "no matches :-(");
 			}
 		}
 
@@ -1357,17 +1284,19 @@ public class MyDialler extends Activity implements OnScrollListener,
 	{
 		public void run()
 		{
-			String s = PhoneSpellDialer.this.curFilter.toString();
-			if (s.indexOf("#") != -1)
-			{
-				s = s.replace('#', ' ');
+			if (MyDialler.this.currentFilter != null) {
+				String s = MyDialler.this.currentFilter;
+				if (s.indexOf("#") != -1) {
+					s = s.replace('#', ' ');
+				}
+				if (s.indexOf('-') != -1) {
+					s = s.replaceAll("-", "");
+				}
+				new SearchContactsTask().execute(s);
+				Log.i("UpdateTimerTask::run", "Execute Timer:".concat(s));
+			} else {
+				Log.i("UpdateTimerTask::run", "No current filter");
 			}
-			if (s.indexOf('-') != -1)
-			{
-				s = s.replaceAll("-", "");
-			}
-			new SearchContactsTask().execute(s);
-			Log.i("scott: timer", "Excute Timer:".concat(s));
 		}
 	}
 }
