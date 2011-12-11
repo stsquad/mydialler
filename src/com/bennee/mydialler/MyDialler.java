@@ -100,9 +100,9 @@ import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class PhoneSpellDialer extends Activity implements OnScrollListener,
-		OnClickListener, OnLongClickListener, /* OnCreateContextMenuListener, */
-		OnItemClickListener
+public class MyDialler extends Activity implements OnScrollListener,
+						   OnClickListener, OnLongClickListener,
+						   OnItemClickListener
 {
 	private static final String TAG = "MyDialler";
 
@@ -766,7 +766,7 @@ public class PhoneSpellDialer extends Activity implements OnScrollListener,
 			cache.callButton = (ImageView) view.findViewById(R.id.call_button);
 			if (cache.callButton != null)
 			{
-				cache.callButton.setOnClickListener(PhoneSpellDialer.this);
+				cache.callButton.setOnClickListener(MyDialler.this);
 			}
 			cache.labelView = (TextView) view.findViewById(R.id.label);
 			cache.dataView = (TextView) view.findViewById(R.id.data);
@@ -1330,7 +1330,7 @@ public class PhoneSpellDialer extends Activity implements OnScrollListener,
 
 			Log.i("SearchContactsTask.doInBackground", "Filter:"
 					.concat(filter[0]));
-			Cursor cur = PhoneSpellDialer.this.contactAccessor.recalculate(
+			Cursor cur = MyDialler.this.contactAccessor.recalculate(
 					filter[0], matchAnywhere);
 
 			Log.i("SearchContactsTask.doInBackground", "cur count:"
@@ -1345,7 +1345,7 @@ public class PhoneSpellDialer extends Activity implements OnScrollListener,
 
 		protected void onPostExecute(Cursor result)
 		{
-			PhoneSpellDialer.this.updatecontactlist(result);
+			MyDialler.this.updatecontactlist(result);
 		}
 	}
 
